@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>aposentacerto</title>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/png" href="images/Logo.png">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	
+		<style>	
+			.calculator {
+			  max-width: 800px;
+			  margin: 0 auto;
+			  padding: 10px;
+			  border: 5px solid #476882;
+			  border-radius: 5px;
+			  background-color: #ffffff;
+			}
+			h1 {
+			  text-align: left;
+			  color: black;
+			  font-size: 30px;
+			  margin-bottom: 10px;
+			}
+			label {
+			  display: block;
+			  margin-bottom: 5px;
+			}
+			input, select {
+			  width: 100%;
+			  padding: 10px;
+			  margin-bottom: 15px;
+			  border: 1px solid #ddd;
+			  border-radius: 5px;
+			}
+			input:focus, select:focus {
+			  outline: none;
+			  border-color: #476882;
+			}
+			button {
+			  padding: 10px 20px;
+			  background-color: #476882;
+			  color: #fff;
+			  border: none;
+			  font-size: 18px;
+			  border-radius: 5px;
+			  cursor: pointer;
+			  width: 100%;
+			}
+			button:hover {
+			  background-color: #364e68;
+			}
+			.results {
+			  margin-top: 20px;
+			}
+			.results p {
+			  color: black;
+			  margin: 2px 0;
+			  font-size: 22px;
+			}
+			.results span {
+			  font-weight: bold;
+			}
+		  </style>
+		
+	</head>
+	<body>
+		<div id="page-wrapper">
+
+			<!-- Cabeçalho -->
+				<div id="header-wrapper">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+
+								<header id="header">
+									<h1><a href="index.html" id="logo">aposentacerto</a></h1>
+									<nav id="nav">
+										<a href="index.html">inicio</a>
+										<a href="rf.html">Renda Fixa</a>
+										<a href="rv.html">Renda Variável</a>
+										<a href="pv.html">Previdência Complementar</a>
+										<a href="calc.html" class="current-page-item">Calculadora de Juros</a>
+									</nav>
+								</header>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<!-- Main -->
+			<br>
+			<div class="calculator">
+				<h2><center>Calculadora de Juros Compostos</center></h2>
+				<label>Valor Inicial:</label>
+				<input type="number" id="initialValue" step="0.01" required>
+			
+				<label>Valor Mensal:</label>
+				<input type="number" id="monthlyContribution" step="0.01" required>
+			
+				<label>Taxa de Juros:</label>
+				<input type="number" id="interestRate" step="0.01" required>
+				<select id="interestRateType">
+				  <option value="monthly">Mensal</option>
+				  <option value="annual">Anual</option>
+				</select>
+			
+				<label>Período de Investimento:</label>
+				<input type="number" id="investmentPeriod" required>
+				<select id="investmentPeriodType">
+				  <option value="months">Meses</option>
+				  <option value="years">Anos</option>
+				</select>
+			
+				<button id="calculateButton">Calcular</button>
+			
+				<div class="results">
+				  <h1>Resultados:</h1>
+				  <p>Valor dos Aportes: <span id="totalContributions">0,00</span></p>
+				  <p>Valor dos Juros: <span id="totalInterest">0,00</span></p>
+				  <p>Valor Total: <span id="finalAmount">0,00</span></p>
+				</div>
+			  </div>
+			
+			  <script>
+				function formatNumberWithPoints(number) {
+				  return 'R$ ' + number.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+				}
+			
+				document.getElementById('calculateButton').addEventListener('click', function() {
+				  const initialValue = parseFloat(document.getElementById('initialValue').value);
+				  const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+				  const interestRate = parseFloat(document.getElementById('interestRate').value);
+				  const interestRateType = document.getElementById('interestRateType').value;
+				  const investmentPeriod = parseFloat(document.getElementById('investmentPeriod').value);
+				  const investmentPeriodType = document.getElementById('investmentPeriodType').value;
+			
+				  const periods = investmentPeriodType === 'years' ? investmentPeriod * 12 : investmentPeriod;
+				  const ratePerPeriod = interestRateType === 'annual' ? (1 + interestRate / 100) ** (1 / 12) - 1 : interestRate / 100;
+			
+				  let totalContributions = initialValue;
+				  let totalInterest = 0;
+			
+				  for (let i = 0; i < periods; i++) {
+					const interest = totalContributions * ratePerPeriod;
+					totalInterest += interest;
+					totalContributions += monthlyContribution + interest;
+				  }
+			
+				  const finalAmount = totalContributions;
+			
+				  document.getElementById('totalContributions').textContent = formatNumberWithPoints(initialValue + monthlyContribution * periods);
+				  document.getElementById('totalInterest').textContent = formatNumberWithPoints(totalInterest);
+				  document.getElementById('finalAmount').textContent = formatNumberWithPoints(finalAmount);
+				});
+			  </script>
+
+			<!-- Rodapé -->
+			<div id="footer-wrapper">
+				<div class="container">
+					<div class="row">
+						<div class="col-8 col-12-medium">
+
+							<section>
+								<h2>Principais Instituições Financeiras do Brasil</h2>
+								<div>
+									<div class="row">
+										<div class="col-3 col-6-medium col-12-small">
+											<ul class="link-list">
+												<li><a href="https://www.santander.com.br" style="text-decoration: none;" target="_blank">Santander</a></li>
+												<li><a href="https://banco.bradesco/html/classic/index.shtm" style="text-decoration: none;" target="_blank">Bradesco</a></li>
+												<li><a href="https://www.itau.com.br" style="text-decoration: none;" target="_blank">Itaú</a></li>
+												<li><a href="https://www.bb.com.br/site/" style="text-decoration: none;" target="_blank">Banco do Brasil</a></li>
+												<li><a href="https://www.caixa.gov.br/Paginas/home-caixa.aspx" style="text-decoration: none;" target="_blank">Caixa</a></li>
+												<li><a href=""></a></li>
+											</ul>
+										</div>
+										<div class="col-3 col-6-medium col-12-small">
+											<ul class="link-list">
+												<li><a href="https://www.sicoob.com.br" style="text-decoration: none;" target="_blank">Sicoob</a></li>
+												<li><a href="https://sicoobcredicitrus.com.br" style="text-decoration: none;" target="_blank">Credicitrus</a></li>
+												<li><a href="https://www.sicredi.com.br/home/" style="text-decoration: none;" target="_blank">Sicredi</a></li>
+												<li><a href="https://xpi.com.br" style="text-decoration: none;" target="_blank">XP Investimentos</a></li>
+												<li><a href="https://www.rico.com.vc" style="text-decoration: none;" target="_blank">Rico</a></li>
+												<li><a href=""></a></li>
+											</ul>
+										</div>
+										<div class="col-3 col-6-medium col-12-small">
+											<ul class="link-list">
+												<li><a href="https://www.banrisul.com.br/" style="text-decoration: none;" target="_blank">Banrisul</a></li>
+												<li><a href="https://www.bancointer.com.br/" style="text-decoration: none;" target="_blank">Inter</a></li>
+												<li><a href="https://nubank.com.br/" style="text-decoration: none;" target="_blank">Nubank</a></li>
+												<li><a href="https://www.c6bank.com.br/" style="text-decoration: none;" target="_blank">C6 Bank</a></li>
+												<li><a href="https://www.bancopan.com.br/" style="text-decoration: none;" target="_blank">Banco Pan</a></li>
+												<li><a href=""></a></li>
+											</ul>
+										</div>
+										<div class="col-3 col-6-medium col-12-small">
+											<ul class="link-list">
+												<li><a href="https://www.bancobmg.com.br/" style="text-decoration: none;" target="_blank">BMG</a></li>
+												<li><a href="https://www.mercadopago.com.br" style="text-decoration: none;" target="_blank">Mercado Pago</a></li>
+												<li><a href="https://www.bv.com.br" style="text-decoration: none;" target="_blank">BV</a></li>
+												<li><a href="https://neon.com.br" style="text-decoration: none;" target="_blank">Neon</a></li>
+												<li><a href="https://www.safra.com.br" style="text-decoration: none;" target="_blank">Safra</a></li>
+												<li><a href=""></a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</section>
+
+						</div>
+						<div class="col-4 col-12-medium">
+
+							<section>
+								<h2>Nos ajude a melhorar</h2>
+								<p>Seu feedback é valioso para nós! Estamos constantemente em busca de aprimorar 
+								   sua experiência e fornecer o melhor conteúdo em educação financeira. Queremos 
+								   saber como podemos ajudá-lo ainda mais a conquistar seus objetivos financeiros 
+								   e tomar decisões inteligentes. Compartilhe suas ideias, sugestões e até mesmo 
+								   críticas construtivas.</p>
+								<font color="black">Contate-nos pelo e-mail: aposentacertooficial@gmail.com</font>
+							</section>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+
+							<div id="copyright">
+								&copy; aposentacerto | Todos os direitos reservados.
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+	</div>
+
+	<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+</body>
+</html>
